@@ -1,6 +1,14 @@
+using Microsoft.EntityFrameworkCore;
 using Parcial1_Ap1_RandyFabian.Components;
+using Parcial1_Ap1_RandyFabian.DAL;
+using Parcial1_Ap1_RandyFabian.Models;
+using Parcial1_Ap1_RandyFabian.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var ConStr = builder.Configuration.GetConnectionString("ConStr");
+builder.Services.AddDbContext<Context>(options => options.UseSqlite(ConStr));
+builder.Services.AddScoped<MetasServices>();
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
