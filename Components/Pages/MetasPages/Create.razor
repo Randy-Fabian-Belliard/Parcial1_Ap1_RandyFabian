@@ -1,0 +1,46 @@
+@page "/Create_Aportes"
+@rendermode InteractiveServer
+@inject MetasServices MetasServices
+
+<EditForm Model="meta" OnValidSubmit="Guardar">
+    <DataAnnotationsValidator/>
+    <div class="card">
+        <div class="card-header">
+            <h1>Registro de metas</h1>
+        </div>
+        <div class="card-body">
+            <!-- Para la fecha -->
+            <label class="form-label">Fecha</label>
+            <InputDate @bind-Value="meta.Fecha" class="form-control" />
+            <ValidationMessage For="@(() => meta.Fecha)" />
+
+            <!-- Para la observación -->
+            <label class="form-label">Descripci&oacute;n</label>
+            <InputText @bind-Value="meta.Descripcion" class="form-control" />
+            <ValidationMessage For="@(() => meta.Descripcion )" />
+
+            <!-- Para el monto -->
+            <label class="form-label">Monto</label>
+            <InputNumber @bind-Value="meta.Monto" class="form-control" />
+            <ValidationMessage For="@(() => meta.Monto )" />
+        </div>
+        <div class="card-footer d-flex justify-content-center">
+            <button type="submit" class="btn btn-outline-success"><i class="bi bi-floppy"></i> Crear</button>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    public Metas meta  { get; set; } = new Metas();
+
+    async Task Guardar()
+    {
+        if (await MetasServices.Guardar(meta))
+            Nuevo();
+    }
+
+    void Nuevo()
+    {
+        meta = new Metas();
+    }
+}
