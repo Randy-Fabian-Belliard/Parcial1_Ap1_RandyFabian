@@ -33,13 +33,13 @@
 
 @code {
     [Parameter]
-    public int MetasId { get; set; }
+    public int MetaId { get; set; }
 
     public Metas meta = new Metas();
 
     protected override async Task OnInitializedAsync()
     {
-        meta.MetaId = MetasId;
+        meta.MetaId = MetaId;
         await Buscar();
     }
 

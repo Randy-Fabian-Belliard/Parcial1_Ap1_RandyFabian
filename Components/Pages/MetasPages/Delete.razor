@@ -32,13 +32,13 @@
 </EditForm>
 @code {
     [Parameter]
-    public int MetasId { get; set; }
+    public int MetaId { get; set; }
 
     public Metas metas = new Metas();
 
     protected override async Task OnInitializedAsync()
     {
-        metas.MetaId = MetasId;
+        metas.MetaId = MetaId;
         await Buscar();
     }
 
