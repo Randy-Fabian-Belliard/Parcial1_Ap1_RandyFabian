@@ -14,12 +14,30 @@ namespace Parcial1_Ap1_RandyFabian.Services
             _context = context;
         }
 
-        public async Task<Metas?> Buscar(int metaId)
+        public async Task<bool> Insertar(Metas metas)
         {
-            return await _context.Metas 
-                .Where(i => i.MetaId == metaId)
-                .AsNoTracking()
-                .FirstOrDefaultAsync();
+            await _context.Metas.AddAsync(metas);
+            return await _context.SaveChangesAsync() > 0;
+        }
+            public async Task<bool> Existe(int metaId)
+        {
+            return await _context.Metas.AnyAsync(m => m.MetaId == metaId);
+
+        }
+
+        public async Task<bool> Modificar(Metas metas)
+        {
+            _context.Entry(await _context.Metas.FindAsync(metas.MetaId)).State = EntityState.Detached;
+            _context.Entry(metas).State = EntityState.Modified;
+            return await _context.SaveChangesAsync() > 0;
+        }
+
+        public async Task<bool> Guardar(Metas metas)
+        {
+            if (await Existe(metas.MetaId))
+                return await Modificar(metas);
+            else
+                return await Insertar(metas);
         }
 
         public async Task<bool> Eliminar(Metas metas)
@@ -28,39 +46,21 @@ namespace Parcial1_Ap1_RandyFabian.Services
             _context.Entry(metas).State = EntityState.Deleted;
             return await _context.SaveChangesAsync() > 0;
         }
-        public async Task<bool> Existe(int metaId)
+
+        public async Task<Metas?> Buscar(int metaId)
         {
-            return await _context.Metas.AnyAsync(i => i. MetaId == metaId);
+            return await _context.Metas
+                .Where(i => i.MetaId == metaId)
+                .AsNoTracking()
+                .FirstOrDefaultAsync();
         }
 
-       public async Task<bool> Guardar(Metas meta)
-        {
-            if (await Existe(meta.MetaId))
-                return await Modificar(meta);
-            else
-                return await Insertar(meta);
-        }
-
-        public async Task<bool> Insertar(Metas meta)
-        {
-            await _context.Metas.AddAsync( meta);
-            return await _context.SaveChangesAsync() > 0;
-        }
-
-        public async Task<bool> Modificar(Metas meta)
-        {
-            _context.Entry(await _context.Metas.FindAsync(meta.MetaId)).State = EntityState.Detached;
-            _context.Entry(meta).State = EntityState.Modified;
-            return await _context.SaveChangesAsync() > 0;
-        }
-
-        public async Task<List<Metas>> GetList(Expression<Func<Metas, bool>> criterio)
-        {
+ public async Task<List<Metas>> GetList(Expression<Func<Metas, bool>> criterio)
+ {
             return await _context.Metas
                 .AsNoTracking()
                 .Where(criterio)
                 .ToListAsync();
         }
-
     }
 }

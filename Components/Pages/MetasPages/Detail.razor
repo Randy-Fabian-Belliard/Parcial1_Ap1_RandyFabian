@@ -1,0 +1,44 @@
+@page "/DT_Meta/{MetaId:int}"
+@rendermode InteractiveServer
+@inject MetasServices MetasServices
+@inject NavigationManager NavigationManager
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Propiedad</th>
+            <th>Valor</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Aporte ID</td>
+            <td>@MetaSeleccionada.MetaId</td>
+        </tr>
+        <tr>
+            <td>Fecha</td>
+            <td>@MetaSeleccionada.Fecha.ToShortDateString()</td>
+        </tr>
+        <tr>
+            <td>Descripci&oacute;n</td>
+            <td>@MetaSeleccionada.Descripcion</td>
+        </tr>
+        <tr>
+            <td>Monto</td>
+            <td>@MetaSeleccionada.Monto</td>
+        </tr>
+    </tbody>
+</table>
+
+
+@code{
+    [Parameter]
+    public int MetaId { get; set; }
+
+    public Metas MetaSeleccionada { get; set; } = new Metas();
+
+    protected async override Task OnInitializedAsync()
+    {
+        MetaSeleccionada = await MetasServices.Buscar(MetaId);
+    }
+}

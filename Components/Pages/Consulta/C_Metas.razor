@@ -1,0 +1,149 @@
+@page "/C_Metas"
+@rendermode InteractiveServer
+@inject MetasServices MetasServices
+
+<div class="card-header">
+    <h2>Consulta </h2>
+    <div class='row'>
+        <div class='col-md-3'>
+            <label>Desde</label>
+            <InputDate @bind-Value="FechaInicial" class="form-control"></InputDate>
+        </div>
+        <div class='col-md-3'>
+            <label>Hasta</label>
+            <div class="finalDate">
+                <InputDate @bind-Value="FechaFinal" class="form-control"></InputDate>
+                 <button type="button" class="btn btn-outline-primary bi bi-arrow-clockwise" @onclick="ResetDate"></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class='row'>
+        @* Filtro *@
+        <div class='col-md-4'>
+            <label>Filtro</label>
+            <div class="filter-box">
+                <InputSelect class="form-select" @bind-Value="opcion">
+                    <option value=0>Sin filtro</option>
+                    <option value=1>Aporte Id</option>
+                    <option value=2>Nombre</option>
+                </InputSelect>
+                <button type="button" class="btn btn-outline-primary bi bi-arrow-clockwise" @onclick="ReiniciarFiltro"></button>
+            </div>
+        </div>
+    <div class='col-md-6'>
+        @* Criterio *@
+        <label>Criterio</label>
+        <div class="col-md-6">
+            <div class="input-group mb-3">
+                <input id="c_search" type="text" class="form-control" @bind="criterio" disabled="@activarCriterio"/>
+                <button type="button" class="btn btn-info oi oi-magnifying-glass" @onclick="Filtrar"></button>
+            </div>
+        </div>
+    </div>
+</div>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Meta ID</th>
+            <th>Fecha</th>
+            <th>Descripci&oacute;n</th>
+            <th>Monto</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in L_Metas)
+        {
+            <tr>
+                <td>@item.MetaId</td>
+                <td>@item.Fecha.ToShortDateString()</td>
+                <td>@item.Descripcion</td>
+                <td>@item.Monto</td>
+                <td>
+                    <a href="/Ed_Metas/@item.MetaId" class="btn btn-outline-success"><i class="bi bi-pencil-square"></i> Editar</a>
+                    <a href="/D_Metas/@item.MetaId" class="btn btn-outline-danger"><i class="bi bi-file-earmark-x"></i> Eliminar</a>
+                    <a href="/DT_Metas/@item.MetaId" class="btn btn-outline-danger"><i class="bi bi-file-earmark-x"></i> Detalle</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code{
+
+    public List<Metas> L_Metas { get; set; } = new List<Metas>();
+    public DateTime FechaInicial { get; set; }
+    public DateTime FechaFinal { get; set; }
+    public int opcion { get; set; }
+    public bool activarCriterio { get { return opcion == 0; } }
+    public string criterio { get; set; } = string.Empty;
+
+    public decimal SumaMontos { get; set; }
+
+    public int Conteo { get; set; }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        L_Metas = await    MetasServices.GetList(c => true);
+    }
+
+
+    async Task Filtrar()
+    {
+        switch (opcion)
+        {
+            case 0:
+                {
+                    SinFiltro();
+                    await IncluirFecha();
+                    break;
+                }
+            case 1:
+                {
+                    await FiltrarPorAporteId();
+                    break;
+                }
+        }
+    }
+
+
+
+    async Task SinFiltro()
+    {
+        L_Metas = await MetasServices.GetList(meta => true);
+        criterio = string.Empty;
+    }
+
+    async Task FiltrarPorAporteId()
+    {
+        int IdBuscado = 0;
+        if (int.TryParse(criterio, out IdBuscado))
+        {
+            L_Metas = await MetasServices.GetList(item => item.MetaId == IdBuscado
+            && item.Fecha >= FechaInicial && item.Fecha <= FechaFinal);
+        }
+    }
+    async Task IncluirFecha()
+    {
+        L_Metas = await MetasServices.GetList(item => item.Fecha >= FechaInicial && item.Fecha <= FechaFinal);
+    }
+
+    void ReiniciarFiltro()
+    {
+        if (opcion != 0)
+        {
+            opcion = 0;
+            criterio = string.Empty;
+        }
+    }
+
+    void ResetDate()
+    {
+        FechaInicial = DateTime.Today;
+        FechaFinal = DateTime.Today;
+    }
+}
+
+

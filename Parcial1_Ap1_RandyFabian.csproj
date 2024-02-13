@@ -14,4 +14,18 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Data\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Components\Pages\Consulta\C_Metas.razor" />
+    <None Include="Components\Pages\Error.razor" />
+    <None Include="Components\Pages\Home.razor" />
+    <None Include="Components\Pages\MetasPages\Create.razor" />
+    <None Include="Components\Pages\MetasPages\Delete.razor" />
+    <None Include="Components\Pages\MetasPages\Detail.razor" />
+    <None Include="Components\Pages\MetasPages\Edit.razor" />
+  </ItemGroup>
+
 </Project>
