@@ -5,11 +5,11 @@ using System.Linq.Expressions;
 
 namespace Parcial1_Ap1_RandyFabian.Services
 {
-    public class  MetasServices
+    public class MetasServices
     {
         private readonly Context _context;
 
-        public  MetasServices(Context context)
+        public MetasServices(Context context)
         {
             _context = context;
         }
@@ -19,7 +19,7 @@ namespace Parcial1_Ap1_RandyFabian.Services
             await _context.Metas.AddAsync(metas);
             return await _context.SaveChangesAsync() > 0;
         }
-            public async Task<bool> Existe(int metaId)
+        public async Task<bool> Existe(int metaId)
         {
             return await _context.Metas.AnyAsync(m => m.MetaId == metaId);
 
@@ -34,6 +34,13 @@ namespace Parcial1_Ap1_RandyFabian.Services
 
         public async Task<bool> Guardar(Metas metas)
         {
+ 
+            bool descripcionExistente = await ExisteDescripcion(metas.Descripcion);
+
+            if (descripcionExistente)
+            {
+                return false;
+            }
             if (await Existe(metas.MetaId))
                 return await Modificar(metas);
             else
@@ -55,12 +62,17 @@ namespace Parcial1_Ap1_RandyFabian.Services
                 .FirstOrDefaultAsync();
         }
 
- public async Task<List<Metas>> GetList(Expression<Func<Metas, bool>> criterio)
- {
+        public async Task<List<Metas>> GetList(Expression<Func<Metas, bool>> criterio)
+        {
             return await _context.Metas
                 .AsNoTracking()
                 .Where(criterio)
                 .ToListAsync();
+        }
+
+        public async Task<bool> ExisteDescripcion(string descripcion)
+        {
+            return await _context.Metas.AnyAsync(d => d.Descripcion == descripcion);
         }
     }
 }
