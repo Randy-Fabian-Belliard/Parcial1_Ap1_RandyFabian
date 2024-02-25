@@ -2,8 +2,10 @@
 @rendermode InteractiveServer
 @inject MetasServices MetasServices
 
+<PageTitle>Registro</PageTitle>
+
 <EditForm Model="meta" OnValidSubmit="Guardar">
-    <DataAnnotationsValidator/>
+    <DataAnnotationsValidator />
     <div class="card">
         <div class="card-header">
             <h1>Registro de metas</h1>
@@ -17,12 +19,17 @@
             <!-- Para la observación -->
             <label class="form-label">Descripci&oacute;n</label>
             <InputText @bind-Value="meta.Descripcion" class="form-control" />
-            <ValidationMessage For="@(() => meta.Descripcion )" />
+            <ValidationMessage For="@(() => meta.Descripcion)" />
+
+            @if (!string.IsNullOrEmpty(mensajeExistenciaDescripcion))
+            {
+                <p class="text-danger">@mensajeExistenciaDescripcion</p>
+            }
 
             <!-- Para el monto -->
             <label class="form-label">Monto</label>
             <InputNumber @bind-Value="meta.Monto" class="form-control" />
-            <ValidationMessage For="@(() => meta.Monto )" />
+            <ValidationMessage For="@(() => meta.Monto)" />
         </div>
         <div class="card-footer d-flex justify-content-center">
             <button type="submit" class="btn btn-outline-success"><i class="bi bi-floppy"></i> Crear</button>
@@ -32,11 +39,22 @@
 
 @code {
     public Metas meta { get; set; } = new Metas();
+    public string mensajeExistenciaDescripcion { get; set; }
 
     async Task Guardar()
     {
-        if (await MetasServices.Guardar(meta))
-            Nuevo();
+        if (await MetasServices.ExisteDescripcion(meta.Descripcion))
+        {
+            mensajeExistenciaDescripcion = "La descripción ya existe. Por favor, elige otra.";
+        }
+        else
+        {
+            mensajeExistenciaDescripcion = string.Empty;
+            if (await MetasServices.Guardar(meta))
+            {
+                Nuevo();
+            }
+        }
     }
 
     void Nuevo()
