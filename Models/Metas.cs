@@ -13,7 +13,7 @@ namespace  Parcial1_Ap1_RandyFabian.Models
         [Required(ErrorMessage = "Este campo es requerido")]
         public string? Descripcion { get; set; }
 
-        [Range(1, int.MaxValue, ErrorMessage = "El campo debe ser mayor que cero")]
+         [Range(1, (double)decimal.MaxValue, ErrorMessage = "El campo debe ser mayor que cero")]
         public decimal Monto { get; set; }
 
     }
