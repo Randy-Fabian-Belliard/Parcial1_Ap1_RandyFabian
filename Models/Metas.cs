@@ -14,8 +14,7 @@ namespace  Parcial1_Ap1_RandyFabian.Models
         public string? Descripcion { get; set; }
 
         [Range(1, int.MaxValue, ErrorMessage = "El campo debe ser mayor que cero")]
-        public double Monto { get; set; }
+        public decimal Monto { get; set; }
 
-        public int conteo { get; set; }
     }
 }
