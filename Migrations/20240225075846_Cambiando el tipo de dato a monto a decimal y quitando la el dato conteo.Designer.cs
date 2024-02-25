@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Parcial1_Ap1_RandyFabian.DAL;
 
@@ -10,9 +11,11 @@ using Parcial1_Ap1_RandyFabian.DAL;
 namespace Parcial1_Ap1_RandyFabian.Migrations
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20240225075846_Cambiando el tipo de dato a monto a decimal y quitando la el dato conteo")]
+    partial class Cambiandoeltipodedatoamontoadecimalyquitandolaeldatoconteo
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.1");
