@@ -114,7 +114,7 @@
                 }
             case 1:
                 {
-                    await FiltrarPorAporteId();
+                    await FiltrarPorId();
                     break;
                 }
         }
@@ -131,7 +131,7 @@
         criterio = string.Empty;
     }
 
-    async Task FiltrarPorAporteId()
+    async Task FiltrarPorId()
     {
         int IdBuscado = 0;
         if (int.TryParse(criterio, out IdBuscado))
